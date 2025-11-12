@@ -1,5 +1,5 @@
 pytest
-fastapi["standard"]
+fastapi[standard]
 sqlmodel
 passlib
 python-jose
