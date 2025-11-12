@@ -1,0 +1,6 @@
+pytest
+fastapi["standard"]
+sqlmodel
+passlib
+python-jose
+python-dotenv
