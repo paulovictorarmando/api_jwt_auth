@@ -17,6 +17,6 @@ class UsuarioLogin(BaseModel):
 	senha: str
 
 class UsuarioUpdate(BaseModel):
-	username: Optional[Annotated[Field(max_length=50)]] = None
+	username: Optional[Annotated[str, Field(max_length=50)]] = None
 	email: Optional[EmailStr] = None
-	senha: Optional[Annotated[Field(min_length=5)]] = None
+	senha: Optional[Annotated[str, Field(min_length=5)]] = None

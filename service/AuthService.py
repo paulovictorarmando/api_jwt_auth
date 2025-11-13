@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 
-from model import Usuario
+from model.Usuario import Usuario
 from repository.UsuarioRepository import UsuarioRepository
 from config.connection import session
 from config.settings import ENV

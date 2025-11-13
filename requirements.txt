@@ -1,6 +1,7 @@
-pytest
 fastapi[standard]
+passlib[bcrypt]
+pytest
 sqlmodel
-passlib
+psycopg2-binary
 python-jose
 python-dotenv

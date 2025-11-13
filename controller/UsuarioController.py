@@ -27,14 +27,15 @@ def update_usuario(id: int,
 	except ValueError as e:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-@router.delete("/{id}", model_return_annotation=UsuarioRead, status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_usuario(id: int,
 	session: Session = Depends(session),
-	usuario: Usuario = Depends(AuthService.get_user)) -> UsuarioRead | None:
+	usuario: Usuario = Depends(AuthService.get_user)) -> None:
 	try:
 		if usuario.id != id:
 			raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Usuário não autorizado")
-		return UsuarioRead.model_validate(UsuarioService.delete(session, id))
+		UsuarioService.delete(session, id)
+		return
 	except ValueError as e:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
