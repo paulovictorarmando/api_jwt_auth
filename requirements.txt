@@ -1,5 +1,6 @@
 fastapi[standard]
 passlib[bcrypt]
+bcrypt==4.0.1
 pytest
 sqlmodel
 psycopg2-binary

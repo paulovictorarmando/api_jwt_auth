@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 
 from model.Usuario import Usuario
 from repository.UsuarioRepository import UsuarioRepository
-from config.connection import session
+from config.connection import get_session
 from config.settings import ENV
 from dto.UsuarioDTO import UsuarioLogin
 
@@ -18,6 +18,7 @@ class AuthService:
 	@staticmethod
 	def create_hash(password: str) -> str:
 		return hash_context.hash(password)
+
 
 	@staticmethod
 	def verify_hash(password: str, hashed: str) -> bool:
@@ -33,8 +34,7 @@ class AuthService:
 	@staticmethod
 	def token_decode(token: str) -> dict | None:
 		try:
-			payload = jwt.decode(token, ENV.SECRET_KEY, algorithms=[ENV.ALGORITHM])
-			return payload
+			return jwt.decode(token, ENV.SECRET_KEY, algorithms=[ENV.ALGORITHM])
 		except JWTError:
 			return None
 	
@@ -52,22 +52,28 @@ class AuthService:
 	@staticmethod
 	def get_user(
 		token: str = Depends(oauth2_scheme),
-		s: Session = Depends(session)
+		s: Session = Depends(get_session)
 	) -> Usuario | None:
 		try:
 			payload = AuthService.token_decode(token)
+			id: str = payload.get("sub")
 		except JWTError:
 			raise HTTPException(
 				status_code=status.HTTP_401_UNAUTHORIZED,
-				detail="Token inválido ou expirado",
+				detail="Token inválido",
 				headers={"WWW-Authenticate": "Bearer"}
 			)
-		id: str = payload.get("sub")
+		except AttributeError:
+			raise HTTPException(
+				status_code=status.HTTP_401_UNAUTHORIZED,
+				detail="Token inválido",
+				headers={"WWW-Authenticate": "Bearer"}
+			)
 		usuario = UsuarioRepository.getById(s, int(id))
 		if not usuario:
 			raise HTTPException(
 				status_code=status.HTTP_401_UNAUTHORIZED,
-				detail="Token inválido ou expirado",
+				detail="Token inválido",
 				headers={"WWW-Authenticate": "Bearer"}
 			)
 		return usuario

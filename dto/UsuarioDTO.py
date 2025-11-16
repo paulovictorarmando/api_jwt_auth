@@ -10,7 +10,7 @@ class UsuarioRead(BaseModel):
 class UsuarioCreate(BaseModel):
 	username: Annotated[str, Field(max_length=50)]
 	email: EmailStr
-	senha: Annotated[ str, Field(min_length=5)] = None
+	senha: Annotated[str, Field(min_length=5)]
 
 class UsuarioLogin(BaseModel):
 	email: EmailStr

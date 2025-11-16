@@ -6,6 +6,6 @@ engine = create_engine(ENV.DATABASE_URL, echo=True)
 def create_tables():
 	SQLModel.metadata.create_all(engine)
 
-def session():
+def get_session():
 	with Session(engine) as s:
 		yield s

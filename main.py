@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from contextlib import asynccontextmanager
 from controller.UsuarioController import router as usuario_router
 from config.connection import create_tables
+
+from sqlmodel import Session
+from config.connection import get_session
 
 from fastapi.middleware.cors import CORSMiddleware
 

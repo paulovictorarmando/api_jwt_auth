@@ -1,7 +1,7 @@
 from .AuthService import AuthService
 from repository.UsuarioRepository import UsuarioRepository
 
-from model import Usuario
+from model.Usuario import Usuario
 from dto.UsuarioDTO import UsuarioCreate, UsuarioUpdate, UsuarioRead
 from sqlmodel import Session
 
@@ -10,8 +10,19 @@ class UsuarioService:
 	def create(session: Session, usuarioCreate: UsuarioCreate) -> Usuario:
 		if UsuarioRepository.getByEmail(session, usuarioCreate.email):
 			raise ValueError("Email já cadastrado")
-		usuarioCreate.senha = AuthService.create_hash(usuarioCreate.senha)
-		usuario = UsuarioRepository.crete(session, usuarioCreate)
+		if not usuarioCreate.senha:
+			raise ValueError("Senha é obrigatória")
+		# Hash the password directly from the model attribute
+		hashed_password = AuthService.create_hash(usuarioCreate.senha)
+		# Create Usuario with hashed password
+		usuario = Usuario(
+			username=usuarioCreate.username,
+			email=usuarioCreate.email,
+			senha=hashed_password
+		)
+		session.add(usuario)
+		session.commit()
+		session.refresh(usuario)
 		return UsuarioRead.model_validate(usuario)
 	
 	@staticmethod
